@@ -2,64 +2,101 @@
 #include <math.h>
 #include <string.h>
 
+#define MAX_clientes 50
+
 enum TipoPessoa {
     PESSOA_FISICA,
-    PESSOA_JURIDICA
+    PESSOA_JURIDICA,
+	ABERTURA_DE_CONTA
 };
 
 struct usuario{
 
-	enum tipoPessoa tipo;
-	char setor[20] ;
+	enum TipoPessoa tipo;
 	char nome [50] ;
 	char cpf[12];
 	int valor;
 	
 };
 
-void exibirCliente(struct usuario cliente) {
+//funçao --------------------------------
 
-    printf("Nome: %s\n", cliente.nome);
-    printf("Documento: %s\n", cliente.cpf);
-
-    if (cliente.tipo == PESSOA_FISICA) {
-        printf("Tipo: Pessoa Física\n");
-    } else if (cliente.tipo == PESSOA_JURIDICA) {
-        printf("Tipo: Pessoa Jurídica\n");
+void exibirPessoasJuridicas(struct usuario pessoa[]) {
+    printf("====== Pessoas Juridicas ======\n\n");
+    for (int i = 0; i < MAX_clientes; i++) {
+        if (pessoa[i].tipo == PESSOA_JURIDICA) {
+            printf("Nome: %s\n",  pessoa[i].nome);
+            printf("CPF: %s\n",  pessoa[i].cpf);
+			printf("Tipo de antedimento: Pessoa Juridica\n\n");
+        }
     }
-	
-    printf("\n");
+}
+void exibirPessoasFisica(struct usuario pessoa[]) {
+    printf("====== Pessoas Fisica ======\n\n");
+    for (int i = 0; i < MAX_clientes; i++) {
+        if (pessoa[i].tipo == PESSOA_FISICA) {
+            printf("Nome: %s\n",  pessoa[i].nome);
+            printf("CPF: %s\n",  pessoa[i].cpf);
+			printf("Tipo de antendimento: Pessoa Fisica\n\n");
+        }
+    }
+}
+void exibirAberturadeConta(struct usuario pessoa[]) {
+    printf("====== Abertura de Conta ======\n\n");
+    for (int i = 0; i < MAX_clientes; i++) {
+        if (pessoa[i].tipo == ABERTURA_DE_CONTA) {
+            printf("Nome: %s\n",  pessoa[i].nome);
+            printf("CPF: %s\n",  pessoa[i].cpf);
+			printf("Tipo de atendimento: Abertura de conta\n\n");
+        }
+    }
 }
 
 int main(){
+	
 
-	struct usuario pessoa[50];
+	struct usuario pessoa[] = {
 
-	int  categoria = 0 ;
-	int  clientes = 0;
-	char opcao;
-	char pessoaFJ;
+		{//usuario 1
+			.tipo = PESSOA_FISICA,
+			.nome = "kevin",
+			.cpf  = "11122233344",
+		},
+		{//usuario 2
+			.tipo = PESSOA_JURIDICA,
+			.nome = "maria do carlos",
+			.cpf  = "44322511298",
+		},
+		{//usuario 3
+			.tipo = ABERTURA_DE_CONTA,
+			.nome = "joelson",
+			.cpf  = "33244511366",
+		},
+		//proximos usuarios ------------
+	};
+
+	int categoria = 0 ;
 	int  validacao = 0;
+	char pessoaFJ;
+	char opcao;
 
-	strcpy(pessoa[0].cpf , "11122233344");
-	strcpy(pessoa[0].nome , "kevin");
-
+	int  MAX_US = sizeof(pessoa) / sizeof(pessoa[0]); // contar o tamanho do array/ struct ------
 	
 	//menu-------------------------------------------------
 	do{
 
 		system("cls");
 		printf("menu principal\n"
-			"1 - selecionar atendimento \n"
-			"2 - lista de atendimento \n"
-			"3 - lista de atendimento por setor \n"
-			"4 - sair \n");
+			"1 - Selecionar atendimento \n"
+			"2 - Lista de Atendimento Registrado \n"
+			"3 - Lista de atendimento por setor \n"
+			"4 - Sair \n");
 		
 		scanf("%c", &opcao);
 		
 		switch (opcao){
 			case '1':
-				// CADASTRO ----------------------
+				// iniando atendimento  ----------------------
 				do{
 					system("cls");
 					printf ("\nja possui cadastro: y/n ?\n");
@@ -72,8 +109,9 @@ int main(){
 						char cpfconfirma[12];
 						printf("Informe seu CPF (apenas numeros, sem pontuacao): ");
 						scanf("%11s", cpfconfirma);
-						// percorre a struct CPF para validacao ----
-						for (int i = 0; i <= 50 ; i++)
+						
+						// percorre a struct para encontrar o CPF EXISTENTE --------------
+						for (int i = 0; i <= MAX_clientes ; i++)
 						{ 
 							if (strcmp(cpfconfirma, pessoa[i].cpf) == 0)
 							{
@@ -93,35 +131,37 @@ int main(){
 						system("cls");
 										
 						printf("\n----vamos realizar o seu cadastro agora!----\n"
-							"\ninforme alguns dos seus dados abaixo.\n");
+							   "\ninforme alguns dos seus dados abaixo.\n");
 
-						if (clientes < 100){
+						if (MAX_US < MAX_clientes){
 
-							clientes ++;
+							MAX_US ++;
 							printf("\ninforme seu cpf: \n");//conferir se CPF ja é existente. ------------ [X]
 							fflush(stdin); // Limpa o buffer do teclado
-							fgets(pessoa[clientes].cpf, sizeof(pessoa[clientes].cpf), stdin);
+							fgets(pessoa[MAX_US].cpf, sizeof(pessoa[MAX_US].cpf), stdin);
 
 							printf("\ninforme seu Nome: \n");
 							fflush(stdin); // Limpa o buffer do teclado
-							fgets(pessoa[clientes].nome, sizeof(pessoa[clientes].nome), stdin);
+							fgets(pessoa[MAX_US].nome, sizeof(pessoa[MAX_US].nome), stdin);
 								
 							//DEFININDO SETOR-------------------------
 
 							printf("\n[1] Conta Pessoa Juridica\n[2] Conta Pessoa Fisica\n");
 							fflush(stdin);
 							scanf("%s", &pessoaFJ);
-							
+							// inplementar abertura de conta -----
 							if (pessoaFJ == '1'){ 
-								strcpy (pessoa[clientes].setor, "Pessoa Juridica."); 
+								pessoa[MAX_US].tipo = PESSOA_JURIDICA;
+								validacao = 1;
 							}else if (pessoaFJ == '2'){
-								strcpy (pessoa[clientes].setor, "Pessoa fisica.");
+								pessoa[MAX_US].tipo = PESSOA_FISICA;
+								validacao = 1;
 							}else {
 								printf("OPCAO INCORRETA");
 							}
 
 						}else{
-							printf("limite de clientes atingido");
+							printf("limite de pessoa atingido");
 						}
 						
 					}
@@ -135,38 +175,49 @@ int main(){
 				}while(validacao != 1);	
 
 			case '2':
-				
+				printf("\n\n----exibindo atendimentos totais registrados----\n\n");
+				printf("quantidade de usuarios totais: %d\n",MAX_US);
+				exibirPessoasJuridicas(pessoa);
+				exibirPessoasFisica(pessoa);
+				exibirAberturadeConta(pessoa);
+				fflush(stdin);
+				system("pause");
+				break;
+
+			case '3':
+
 				printf("\nqual categoria gostaria de consultar? \n");
-				printf("\n[1]-Pessoa Juridia\n[2]-Pessoa fisica\n[4]-voltar\n");
+				printf("\n[1]-Pessoa Juridia\n[2]-Pessoa fisica\n[3]-abertura de conta\n[4]-voltar\n");
 				fflush(stdin);
 				scanf("%1d",&categoria);
 
 				if (categoria == 1)
 				{
-
-					printf("\n-------- lista Pessoa Juridica --------\n");
-					for (int j = 0 ; j <= 50 ; j++){
-
-						printf ("%s\n", pessoa[0].setor);
-
-					}
-
+					exibirPessoasJuridicas(pessoa);
 					system("pause");
-
-
+					fflush(stdin);
 				}
 				else if(categoria == 2)
 				{
-					printf("-------- lista Pessoa Fisica --------");
+					
+					exibirPessoasFisica(pessoa);
 					system("pause");
+					fflush(stdin);
+				}
+				else if(categoria == 3)
+				{
+					
+					exibirAberturadeConta(pessoa);
+					system("pause");
+					fflush(stdin);
 				}
 				else
 				{
+					system("cls");
+					fflush(stdin);
 					break;
 				}
-			case '3':
-				
-				break;
+
 			case '4':
 				
 				validacao =1;
@@ -174,13 +225,13 @@ int main(){
 				return 0;
 
 			default:
-				
+				printf("Opcao inesistente.\n");
+				fflush(stdin);
+				system("pause");
 				break;
 			
 		}
-
 	}while(validacao !=1 );
 	
-
 	printf("\nentrou\n"); 
 }
