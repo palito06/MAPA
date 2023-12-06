@@ -6,11 +6,10 @@
 #define MAX_clientes 50
 
 enum TipoPessoa {
-
     PESSOA_FISICA,
     PESSOA_JURIDICA,
 	ABERTURA_DE_CONTA,
-
+	CAIXA,
 };
 
 struct usuario{
@@ -55,12 +54,22 @@ void exibirAberturadeConta(struct usuario pessoa[]) {
         }
     }
 }
+void exibirCAIXA(struct usuario pessoa[]) {
+    printf("============ caixa ============\n\n");
+    for (int i = 0; i < MAX_clientes; i++) {
+        if (pessoa[i].tipo == CAIXA && pessoa[i].tipo > 0) {
+            printf("Nome: %s\n", pessoa[i].nome);
+            printf("CPF: %s\n", pessoa[i].cpf);
+            printf("Tipo de atendimento: caixa\n\n");
+        }
+    }
+}
 
 //-----------------------------------------------
 
 int main(){
 
-	struct usuario pessoa[MAX_clientes] = {
+	struct usuario pessoa[] = {
 
 		{//usuario 1
 			.tipo = PESSOA_FISICA,
@@ -73,7 +82,7 @@ int main(){
 			.cpf  = "44322511298",
 		},
 		{//usuario 3
-			.tipo = PESSOA_FISICA,
+			.tipo = CAIXA,
 			.nome = "joelson",
 			.cpf  = "33244511366",
 		},
@@ -89,15 +98,15 @@ int main(){
 		},
 		//proximos usuarios ------------
 	};
-
+	fflush(stdin);
 	system("cls");
 
 	int  sair = 0;
 	int  categoria;
 	int  validacao = 0;
-	char pessoaFJ = 0;
-	char opcao = 0;
-	int MAX_US = 0;
+	char pessoaFJ;
+	char opcao;
+	int  MAX_US=0;
 
 	//menu-------------------------------------------------
 	
@@ -111,88 +120,90 @@ int main(){
 			"3 - Lista de atendimento por setor \n"
 			"4 - Sair \n");
 		fflush(stdin);
-		scanf("%1c", &opcao);
+		scanf(" %1c", &opcao);
 		
 		switch (opcao){
 			case '1':
 				// iniciando atendimento  ----------------------
 				do{
 					system("cls");
-					printf ("\nja possui cadastro: y/n ?\n");
-					printf("[s] - sair\n");
+					printf ("\nja possui cadastro: y/n ?  -  [s] Sair\n");
 					fflush(stdin);
 					scanf("%c", &pessoaFJ); 
 					
 					if (pessoaFJ == 'y'){
+
 						system("cls");
 						char cpfconfirma[12];
 						printf("Informe seu CPF (apenas numeros, sem pontuacao): ");
 						fflush(stdin);
-						scanf("%s", cpfconfirma);
-						
+						fgets(cpfconfirma, sizeof(cpfconfirma), stdin);
+
 						// percorre a struct para encontrar o CPF EXISTENTE --------------
-						for (int i = 0; i <= MAX_US ; i++)
+						for (int i = 0; i <= MAX_US ; ++i)
 						{ 
-							if (strcmp(cpfconfirma, pessoa[i].cpf) == 0) 
+							if (strcmp(cpfconfirma, pessoa[i].cpf) == 0) // ver erro de procura de CPF ----------
 							{
 								sair = 1;
 								printf("\n------CPF encontrado------\n");
 								printf("\nseja bem vindo de volta %s\n", pessoa[i].nome);
 							}
 						}
-						system("pause");
-						if (sair == 0){
 
+						if (sair == 0){
 							printf("[x][x] CPF nao encontrado [x][x]\n\n");
 							system("pause");
-
 						}
+						fflush(stdin);
 					}
-					else if ( pessoaFJ == 'n')
+					else if (pessoaFJ == 'n' && MAX_US < MAX_clientes)
 					{
+
 						// ----------------cadastro --------------------
-					
 						printf("\n----vamos realizar o seu cadastro agora!----\n"
 							   "\ninforme alguns dos seus dados abaixo.\n");
-						system("pause");
 
-						if (MAX_US < MAX_clientes){
-							MAX_US ++;
-							fflush(stdin); // limpa o buffer
-							printf("\ninforme seu cpf: \n");//conferir se CPF ja é existente. ------------ [X]
-							fgets(pessoa[MAX_US].cpf, sizeof(pessoa[MAX_US].cpf), stdin);
+						MAX_US ++;
+						printf("\ninforme seu cpf: \n");//conferir se CPF ja é existente. ------------ [X]
+						fflush(stdin); // limpa o buffer
+						fgets(pessoa[MAX_US].cpf, sizeof(pessoa[MAX_US].cpf), stdin);
 
-							printf("\ninforme seu Nome: \n");
-							fflush(stdin); // Limpa o buffer do teclado
-							fgets(pessoa[MAX_US].nome, sizeof(pessoa[MAX_US].nome), stdin);
-								
-							//DEFININDO SETOR-------------------------
+						printf("\ninforme seu Nome: \n");
+						fflush(stdin); // Limpa o buffer do teclado
+						fgets(pessoa[MAX_US].nome, sizeof(pessoa[MAX_US].nome), stdin);
 							
-							printf("\n[1] Conta Pessoa Juridica\n[2] Conta Pessoa Fisica\n[3]Abertura de conta.\n\n");
-							fflush(stdin);
-							scanf("%s", &pessoaFJ);
-							
-							if (pessoaFJ == '1')
-							{ 
-								pessoa[MAX_US].tipo = PESSOA_JURIDICA;
-							}
-							else if (pessoaFJ == '2')
-							{
-								pessoa[MAX_US].tipo = PESSOA_FISICA;
-							}
-							else if(pessoaFJ == '3')
-							{
-								pessoa[MAX_US].tipo = ABERTURA_DE_CONTA;
-							}
-							else 
-							{
-								printf("OPCAO INCORRETA");
-							}
-
-						}else{
-							printf("limite de pessoa atingido");
+						//DEFININDO SETOR-------------------------
+						
+						printf("\n[1] Conta Pessoa Juridica\n[2] Conta Pessoa Fisica\n[3]Abertura de conta\n[4]Caixa.\n\n");
+						fflush(stdin);
+						scanf(" %c", &pessoaFJ);
+						
+						if (pessoaFJ == '1')
+						{ 
+							pessoa[MAX_US].tipo = PESSOA_JURIDICA;
 						}
-
+						else if (pessoaFJ == '2')
+						{
+							pessoa[MAX_US].tipo = PESSOA_FISICA;
+						}
+						else if(pessoaFJ == '3')
+						{
+							pessoa[MAX_US].tipo = ABERTURA_DE_CONTA;
+						}
+						else if(pessoaFJ == '4')
+						{
+							pessoa[MAX_US].tipo = CAIXA;
+						}
+						else 
+						{
+							printf("OPCAO INCORRETA");
+						}
+						fflush(stdin);
+						sair = 0;
+					}
+					else if (MAX_US >= MAX_clientes)
+					{
+						printf("limite de pessoa atingido");
 					}
 					else if (pessoaFJ == 's')
 					{
@@ -205,23 +216,19 @@ int main(){
 						printf("\n[x][x] OPCAO INDISPONIVEL [x][x]\n");
 						system("pause");
 					}
-
 					fflush(stdin);//clear
-
 				}while(sair != 1);
-
-				opcao = 0;
-				break;
-
+				fflush(stdin);
 
 			case '2':
-
+				
+				fflush(stdin);
 				printf("\n\n----exibindo atendimentos totais registrados----\n\n");
 				printf("quantidade de usuarios totais: %d\n",MAX_US);
-				fflush(stdin);
 				exibirPessoasJuridicas(pessoa);
 				exibirAberturadeConta(pessoa);
 				exibirPessoasFisica(pessoa);
+				exibirCAIXA(pessoa);
 
 				system("pause");
 				break;
@@ -231,7 +238,7 @@ int main(){
 				categoria = 0 ;
 				opcao = 0;
 				printf("\nqual categoria gostaria de consultar? \n");
-				printf("\n[1]-Pessoa Juridia\n[2]-Pessoa fisica\n[3]-abertura de conta\n[4]-voltar\n\n");
+				printf("\n[1]-Pessoa Juridia\n[2]-Pessoa fisica\n[3]-abertura de conta\n[4]-CAIXA\n[5]-voltar\n\n");
 				fflush(stdin);
 				scanf("%1d",&categoria);
 
@@ -253,13 +260,18 @@ int main(){
 					fflush(stdin);
 					system("pause");
 				}
+				else if(categoria == 4)
+				{
+					exibirCAIXA(pessoa);
+					fflush(stdin);
+					system("pause");
+				}
 				else
 				{
 					system("cls");
 					fflush(stdin);
 				}
 				break;
-				fflush(stdin);
 
 			case '4':
 
@@ -276,7 +288,10 @@ int main(){
 				break;
 			
 		}
+		printf("----> %d\n",sair);
+		system("pause");
 	}while(validacao !=1 );
+
 	return 0;
 }
 
