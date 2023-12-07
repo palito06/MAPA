@@ -16,7 +16,7 @@ struct usuario{
 
 	enum TipoPessoa tipo;
 	char nome [50] ;
-	char cpf[13];
+	char cpf[12];
 	int valor;
 	
 };
@@ -98,6 +98,7 @@ int main(){
 		},
 		//proximos usuarios ------------
 	};
+
 	fflush(stdin);
 	system("cls");
 
@@ -127,9 +128,9 @@ int main(){
 				// iniciando atendimento  ----------------------
 				do{
 					system("cls");
-					printf ("\nja possui cadastro: y/n ?  -  [s] Sair\n");
+					printf ("\nja possui cadastro: y/n ? --- [s] Sair\n");
 					fflush(stdin);
-					scanf("%c", &pessoaFJ); 
+					scanf(" %1c", &pessoaFJ); 
 					
 					if (pessoaFJ == 'y'){
 
@@ -160,15 +161,16 @@ int main(){
 					{
 
 						// ----------------cadastro --------------------
-						printf("\n----vamos realizar o seu cadastro agora!----\n"
-							   "\ninforme alguns dos seus dados abaixo.\n");
+						printf("\n-----vamos realizar o seu cadastro agora-----\n"
+							   "    informe alguns dos seus dados abaixo.\n"
+							   "----------------------------------------------");
 
 						MAX_US ++;
-						printf("\ninforme seu cpf: \n");//conferir se CPF ja é existente. ------------ [X]
+						printf("\ninforme seu cpf: ");//conferir se CPF ja é existente. ------------ [X]
 						fflush(stdin); // limpa o buffer
 						fgets(pessoa[MAX_US].cpf, sizeof(pessoa[MAX_US].cpf), stdin);
 
-						printf("\ninforme seu Nome: \n");
+						printf("\ninforme seu Nome: ");
 						fflush(stdin); // Limpa o buffer do teclado
 						fgets(pessoa[MAX_US].nome, sizeof(pessoa[MAX_US].nome), stdin);
 							
@@ -176,7 +178,7 @@ int main(){
 						
 						printf("\n[1] Conta Pessoa Juridica\n[2] Conta Pessoa Fisica\n[3]Abertura de conta\n[4]Caixa.\n\n");
 						fflush(stdin);
-						scanf(" %c", &pessoaFJ);
+						scanf(" %1c", &pessoaFJ);
 						
 						if (pessoaFJ == '1')
 						{ 
@@ -218,19 +220,20 @@ int main(){
 					}
 					fflush(stdin);//clear
 				}while(sair != 1);
+
 				fflush(stdin);
+				sair = 0;
+				break;
 
 			case '2':
 				
 				fflush(stdin);
-				printf("\n\n----exibindo atendimentos totais registrados----\n\n");
+				printf("\n----exibindo atendimentos totais registrados----\n\n");
 				printf("quantidade de usuarios totais: %d\n",MAX_US);
 				exibirPessoasJuridicas(pessoa);
 				exibirAberturadeConta(pessoa);
 				exibirPessoasFisica(pessoa);
 				exibirCAIXA(pessoa);
-
-				system("pause");
 				break;
 
 			case '3':
@@ -246,25 +249,22 @@ int main(){
 				{
 					exibirPessoasJuridicas(pessoa);
 					fflush(stdin);
-					system("pause");
 				}
 				else if(categoria == 2)
 				{	
 					exibirPessoasFisica(pessoa);
 					fflush(stdin);
-					system("pause");	
 				}
 				else if(categoria == 3)
 				{
 					exibirAberturadeConta(pessoa);
 					fflush(stdin);
-					system("pause");
 				}
 				else if(categoria == 4)
 				{
 					exibirCAIXA(pessoa);
 					fflush(stdin);
-					system("pause");
+					
 				}
 				else
 				{
@@ -288,7 +288,6 @@ int main(){
 				break;
 			
 		}
-		printf("----> %d\n",sair);
 		system("pause");
 	}while(validacao !=1 );
 
